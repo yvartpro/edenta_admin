@@ -9,7 +9,7 @@ export default function Dashboard() {
 
     useEffect(() => {
         apiClient.get("/stats")
-            .then(res => setStats(res.data))
+            .then(res => setStats(res))
             .finally(() => setLoading(false));
     }, []);
 
