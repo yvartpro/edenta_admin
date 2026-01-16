@@ -16,14 +16,22 @@ export default function ArticleList() {
     setLoading(true);
     try {
       const data = await getArticles();
-      setArticles(data);
+      console.log("Fetched articles data:", data);
+      if (Array.isArray(data)) {
+        setArticles(data);
+      } else {
+        console.error("API did not return an array", data);
+        setArticles([]);
+      }
     } catch (err) {
       console.error(err);
+      setArticles([]);
     } finally {
       setLoading(false);
     }
   };
 
+  console.log(articles)
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this article? This cannot be undone.")) return;
     try {
