@@ -8,7 +8,7 @@ import ArticleEditor from "./pages/Articles/ArticleEditor";
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/edenta/api">
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
