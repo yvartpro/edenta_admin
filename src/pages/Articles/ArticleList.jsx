@@ -3,11 +3,14 @@ import { Link } from "react-router-dom";
 import { Plus, Edit2, Trash2, FileText, CheckCircle, Circle } from "lucide-react";
 import { getArticles, deleteArticle } from "../../services/articles.api";
 import { clsx } from "clsx";
-import { LoadingSpinner, EdentaButton } from "../../components/MyUtilities";
+import { LoadingSpinner, EdentaButton, ConfirmModal } from "../../components/MyUtilities";
 
 export default function ArticleList() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [articleToDelete, setArticleToDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -30,14 +33,24 @@ export default function ArticleList() {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Delete this article? This cannot be undone.")) return;
+  const initiateDelete = (article) => {
+    setArticleToDelete(article);
+    setDeleteModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!articleToDelete) return;
+    setDeleting(true);
     try {
-      await deleteArticle(id);
-      setArticles(prev => prev.filter(a => a.id !== id));
+      await deleteArticle(articleToDelete.id);
+      setArticles(prev => prev.filter(a => a.id !== articleToDelete.id));
+      setDeleteModalOpen(false);
+      setArticleToDelete(null);
     } catch (error) {
       console.error(error);
       alert("Failed to delete article");
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -110,7 +123,7 @@ export default function ArticleList() {
                         <Link to={`/articles/${article.id}`} className="text-pink-600 p-1">
                           <Edit2 size={18} />
                         </Link>
-                        <button onClick={() => handleDelete(article.id)} className="text-red-400 p-1">
+                        <button onClick={() => initiateDelete(article)} className="text-red-400 p-1">
                           <Trash2 size={18} />
                         </button>
                       </div>
@@ -167,7 +180,7 @@ export default function ArticleList() {
                             <Edit2 size={18} />
                           </Link>
                           <button
-                            onClick={() => handleDelete(article.id)}
+                            onClick={() => initiateDelete(article)}
                             className="text-red-400 hover:text-red-600"
                           >
                             <Trash2 size={18} />
@@ -182,6 +195,14 @@ export default function ArticleList() {
           </>
         )}
       </div>
+      <ConfirmModal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={confirmDelete}
+        title="Delete Article"
+        message={`Are you sure you want to delete "${articleToDelete?.title}"? This action cannot be undone.`}
+        loading={deleting}
+      />
     </div>
   );
 }

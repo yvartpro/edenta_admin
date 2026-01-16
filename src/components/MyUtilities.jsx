@@ -128,3 +128,32 @@ export const BlockBar = ({ onAdd }) => {
     </div>
   );
 }
+
+export const ConfirmModal = ({ isOpen, onClose, onConfirm, title, message, confirmText = "Delete", cancelText = "Cancel", isDanger = true, loading = false }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+      <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 animate-in fade-in zoom-in-95 duration-200">
+        <h3 className="text-lg font-bold text-gray-900 mb-2">{title}</h3>
+        <p className="text-gray-600 mb-6">{message}</p>
+        <div className="flex justify-end gap-3">
+          <EdentaButton
+            onClick={onClose}
+            variant="secondary"
+            disabled={loading}
+          >
+            {cancelText}
+          </EdentaButton>
+          <EdentaButton
+            onClick={onConfirm}
+            variant={isDanger ? "danger" : "primary"}
+            loading={loading}
+          >
+            {confirmText}
+          </EdentaButton>
+        </div>
+      </div>
+    </div>
+  );
+};

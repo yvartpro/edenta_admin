@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Plus, Edit2, Trash2, Save, X } from "lucide-react";
 import apiClient from "../../apiClient";
-import { Card, IconBtn, LoadingSpinner, EdentaButton } from "../../components/MyUtilities";
+import { Card, IconBtn, LoadingSpinner, EdentaButton, ConfirmModal } from "../../components/MyUtilities";
 
 export default function CategoryList() {
   const [categories, setCategories] = useState([]);
@@ -12,6 +12,8 @@ export default function CategoryList() {
   const [deleting, setDeleting] = useState(false);
   const [editName, setEditName] = useState("");
   const [newName, setNewName] = useState("");
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState(null);
 
   useEffect(() => {
     fetchCategories();
@@ -72,12 +74,19 @@ export default function CategoryList() {
       });
   };
 
-  const handleDelete = (id) => {
+  const initiateDelete = (cat) => {
+    setCategoryToDelete(cat);
+    setDeleteModalOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (!categoryToDelete) return;
     setDeleting(true);
-    if (!window.confirm("Delete this category?")) return;
-    apiClient.delete(`/category/${id}`)
+    apiClient.delete(`/category/${categoryToDelete.id}`)
       .then(() => {
-        setCategories(categories.filter(c => c.id !== id));
+        setCategories(categories.filter(c => c.id !== categoryToDelete.id));
+        setDeleteModalOpen(false);
+        setCategoryToDelete(null);
       })
       .catch(error => {
         console.error(error);
@@ -162,10 +171,9 @@ export default function CategoryList() {
                       Edit
                     </EdentaButton>
                     <EdentaButton
-                      onClick={() => handleDelete(cat.id)}
+                      onClick={() => initiateDelete(cat)}
                       icon={Trash2}
                       disabled={deleting}
-                      loading={deleting}
                       mobileIconOnly
                       variant="ghost"
                       className="text-red-600 hover:bg-red-50 hover:text-red-700"
@@ -179,6 +187,15 @@ export default function CategoryList() {
           ))
         )}
       </div>
+
+      <ConfirmModal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={confirmDelete}
+        title="Delete Category"
+        message={`Are you sure you want to delete "${categoryToDelete?.name}"? This action cannot be undone.`}
+        loading={deleting}
+      />
     </div>
   );
 }

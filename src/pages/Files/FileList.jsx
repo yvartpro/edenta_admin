@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
 import { Upload, Trash2, Image as ImageIcon, Film } from "lucide-react";
 import apiClient from "../../apiClient";
-import { Card, Header, IconBtn, LoadingSpinner, EdentaButton } from "../../components/MyUtilities";
+import { Card, Header, IconBtn, LoadingSpinner, EdentaButton, ConfirmModal } from "../../components/MyUtilities";
 
 export default function FileList() {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [fileToDelete, setFileToDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     fetchFiles();
@@ -44,14 +47,24 @@ export default function FileList() {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this file?")) return;
+  const initiateDelete = (file) => {
+    setFileToDelete(file);
+    setDeleteModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!fileToDelete) return;
+    setDeleting(true);
     try {
-      await apiClient.delete(`/file/${id}`);
-      setFiles(files.filter((f) => f.id !== id));
+      await apiClient.delete(`/file/${fileToDelete.id}`);
+      setFiles(files.filter((f) => f.id !== fileToDelete.id));
+      setDeleteModalOpen(false);
+      setFileToDelete(null);
     } catch (error) {
       console.error(error);
       alert("Delete failed");
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -99,7 +112,7 @@ export default function FileList() {
                   {file.alt || "Unnamed File"}
                 </span>
                 <button
-                  onClick={() => handleDelete(file.id)}
+                  onClick={() => initiateDelete(file)}
                   className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
                 >
                   <Trash2 size={14} />
@@ -117,6 +130,14 @@ export default function FileList() {
           <p className="mt-1 text-sm text-gray-500">Upload an image or video to get started.</p>
         </div>
       )}
+      <ConfirmModal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={confirmDelete}
+        title="Delete File"
+        message="Are you sure you want to delete this file? This action cannot be undone."
+        loading={deleting}
+      />
     </div>
   );
 }
