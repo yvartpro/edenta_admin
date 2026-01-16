@@ -46,7 +46,7 @@ export default function ArticlePreview({ data }) {
               {(section.blocks || []).map((block) => {
                 switch (block.type) {
                   case "text":
-                    return <div key={block.id} className="text-gray-800 leading-7 whitespace-pre-wrap prose prose-indigo max-w-none" dangerouslySetInnerHTML={{ __html: block.value }} />;
+                    return <div key={block.id} className="text-gray-800 leading-7 whitespace-pre-wrap prose prose-indigo max-w-none [&_ul]:italic [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6" dangerouslySetInnerHTML={{ __html: block.value }} />;
                   case "image": {
                     let src = block.value;
                     if (!src && block.fileId && data.contentFiles) {
