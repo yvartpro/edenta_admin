@@ -37,8 +37,11 @@ export const EdentaButton = ({ children, icon: Icon, onClick, loading, disabled,
   );
 };
 
-export const Card = ({ children, className }) =>
-  <div className={classNames("bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6", className)}>
+export const Card = ({ children, className, onClick }) =>
+  <div
+    className={classNames("bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6", className)}
+    onClick={onClick}
+  >
     {children}
   </div>
 
