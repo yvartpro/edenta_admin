@@ -3,7 +3,7 @@ import apiClient from "../apiClient";
 import { Image as ImageIcon, Film, Check } from "lucide-react";
 import { clsx } from "clsx";
 
-export default function MediaGrid({ onSelect }) {
+export default function MediaGrid({ onSelect, multiSelect = false }) {
     const [files, setFiles] = useState([]);
     const [loading, setLoading] = useState(false);
     const [selectedIds, setSelectedIds] = useState(new Set());
@@ -25,25 +25,18 @@ export default function MediaGrid({ onSelect }) {
     };
 
     const toggleSelection = (file) => {
-        setSelectedIds(prev => {
-            const next = new Set(prev);
-            if (next.has(file.id)) {
-                next.delete(file.id);
-            } else {
-                // For now, let's assume single selection mostly, but allow multiple logic
-                // If we want single selection only, we can do:
-                // return new Set([file.id]);
+        const newSet = new Set(selectedIds);
+        if (newSet.has(file.id)) {
+            newSet.delete(file.id);
+        } else {
+            if (!multiSelect) newSet.clear();
+            newSet.add(file.id);
+        }
+        setSelectedIds(newSet);
 
-                // But for consistency with the prompt usage which passed arrays, we'll clear and set one for now?
-                // or just add?
-                // Let's implement single selection for simplicity in this version unless multiselect requested
-                return new Set([file.id]);
-            }
-            return next;
-        });
-
-        // Immediate callback for single selection UX
-        onSelect([file]);
+        // Map IDs back to file objects
+        const selectedFiles = files.filter(f => newSet.has(f.id));
+        onSelect(selectedFiles);
     };
 
     return (

@@ -120,6 +120,16 @@ export default function ArticleEditor() {
               const file = files.find(f => f.id === block.fileId);
               if (file) return { ...block, value: file.url };
             }
+            if (block.type === 'gallery' && Array.isArray(block.images)) {
+              const hydratedImages = block.images.map(img => {
+                if (img.fileId && !img.url) {
+                  const file = files.find(f => f.id === img.fileId);
+                  if (file) return { ...img, url: file.url };
+                }
+                return img;
+              });
+              return { ...block, images: hydratedImages };
+            }
             return block;
           })
         }));
@@ -173,7 +183,14 @@ export default function ArticleEditor() {
         sec.id === sid
           ? {
             ...sec,
-            blocks: [...(sec.blocks || []), { id: crypto.randomUUID(), type, value: "" }],
+            blocks: [...(sec.blocks || []), {
+              id: crypto.randomUUID(),
+              type,
+              value: "",
+              // Gallery defaults
+              images: [],
+              layout: "grid"
+            }],
           }
           : sec
       )
@@ -205,13 +222,24 @@ export default function ArticleEditor() {
     );
 
   /* ============ MEDIA ============ */
-  const openMedia = (sectionId, blockId) => {
-    setMediaCtx({ type: "block", sectionId, blockId });
+  const openMedia = (sectionId, blockId, typeOverride) => {
+    setMediaCtx({ type: typeOverride || "block", sectionId, blockId });
     setShowMediaLibrary(true);
   };
 
   const handleMediaSelect = (entries) => {
     if (!mediaCtx || !entries.length) return;
+
+    // Handle Gallery
+    if (mediaCtx.type === "gallery") {
+      const images = entries.map(f => ({ fileId: f.id, url: f.url }));
+      updateBlock(mediaCtx.sectionId, mediaCtx.blockId, { images });
+      setShowMediaLibrary(false);
+      setMediaCtx(null);
+      return;
+    }
+
+    // Handle Single Image / Hero
     const file = entries[0];
     const url = file.url;
     const fileId = file.id;
@@ -245,8 +273,15 @@ export default function ArticleEditor() {
           blocks: (section.blocks || []).map(block => {
             if (block.type === 'image' && block.fileId) {
               // Remove value (URL) to rely on fileId
-              const { ...rest } = block;
+              // eslint-disable-next-line no-unused-vars
+              const { value, ...rest } = block;
               return rest;
+            }
+            if (block.type === 'gallery' && Array.isArray(block.images)) {
+              // Dehydrate gallery images
+              // eslint-disable-next-line no-unused-vars
+              const dehydratedImages = block.images.map(({ url, ...imgRest }) => imgRest);
+              return { ...block, images: dehydratedImages };
             }
             return block;
           })
@@ -386,6 +421,31 @@ export default function ArticleEditor() {
                                 </div>
                                 {block.value && <img src={block.value} className="mt-2 max-h-32 rounded border" />}
                               </div>
+                            ) : block.type === "gallery" ? (
+                              <div className="bg-gray-50 p-3 rounded border border-gray-200">
+                                <div className="flex justify-between items-center mb-2">
+                                  <span className="text-sm font-bold text-gray-700">Gallery</span>
+                                  <div className="flex gap-2">
+                                    <select
+                                      className="text-xs p-1 rounded border"
+                                      value={block.layout || "grid"}
+                                      onChange={(e) => updateBlock(section.id, block.id, { layout: e.target.value })}
+                                    >
+                                      <option value="grid">Grid</option>
+                                      <option value="masonry">Masonry</option>
+                                    </select>
+                                    <button onClick={() => openMedia(section.id, block.id, "gallery")} className="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded">
+                                      Select Images
+                                    </button>
+                                  </div>
+                                </div>
+                                <div className="grid grid-cols-4 gap-2">
+                                  {(block.images || []).map((img, idx) => (
+                                    <img key={idx} src={img.url} className="w-full aspect-square object-cover rounded border bg-white" />
+                                  ))}
+                                </div>
+                                {(block.images || []).length === 0 && <div className="text-xs text-gray-400 italic p-2 text-center">No images selected</div>}
+                              </div>
                             ) : (
                               <WysiwygInput
                                 value={block.value}
@@ -426,7 +486,10 @@ export default function ArticleEditor() {
               </button>
             </div>
             <div className="flex-1 overflow-y-auto pr-2">
-              <MediaGrid onSelect={handleMediaSelect} />
+              <MediaGrid
+                onSelect={handleMediaSelect}
+                multiSelect={mediaCtx?.type === "gallery"}
+              />
             </div>
           </div>
         </div>

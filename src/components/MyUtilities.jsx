@@ -82,6 +82,7 @@ export const BlockBar = ({ onAdd }) => {
     const blocks = [
         { type: "text", label: "Text" },
         { type: "image", label: "Image" },
+        { type: "gallery", label: "Gallery" },
         // { type: "list", label: "List" },
     ];
 

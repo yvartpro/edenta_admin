@@ -63,6 +63,39 @@ export default function ArticlePreview({ data }) {
                       </figure>
                     );
                   }
+                  case "gallery": {
+                    const images = (block.images || []).map(img => {
+                      let url = img.url;
+                      if (!url && img.fileId && data.contentFiles) {
+                        const file = (data.contentFiles || []).find(f => f.id === img.fileId);
+                        if (file) url = file.url;
+                      }
+                      return { ...img, url };
+                    });
+
+                    if (block.layout === "masonry") {
+                      return (
+                        <div key={block.id} className="my-8 columns-2 md:columns-3 gap-4 space-y-4">
+                          {images.map((img, idx) => (
+                            <div key={idx} className="break-inside-avoid">
+                              <img src={img.url} alt={`Gallery ${idx}`} className="w-full rounded-lg shadow-sm mb-4" />
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    }
+
+                    // Default Grid
+                    return (
+                      <div key={block.id} className="my-8 grid grid-cols-2 md:grid-cols-3 gap-4">
+                        {images.map((img, idx) => (
+                          <div key={idx} className="aspect-square">
+                            <img src={img.url} alt={`Gallery ${idx}`} className="w-full h-full object-cover rounded-lg shadow-sm" />
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  }
                   case "list":
                     return (
                       <div key={block.id} className="bg-gray-100 p-4 rounded text-xs text-gray-500">List Preview Not Implemented</div>
