@@ -111,12 +111,25 @@ export default function ArticleEditor() {
         // Ensure content is an object with sections array, stripping any garbage keys
         const sections = Array.isArray(content?.sections) ? content.sections : [];
 
+        // Hydrate image URLs from contentFiles
+        const files = data.contentFiles || [];
+        const hydratedSections = sections.map(section => ({
+          ...section,
+          blocks: (section.blocks || []).map(block => {
+            if (block.type === 'image' && block.fileId && !block.value) {
+              const file = files.find(f => f.id === block.fileId);
+              if (file) return { ...block, value: file.url };
+            }
+            return block;
+          })
+        }));
+
         setArticle({
           ...data,
           categoryId: data.categoryId,
           hero_url: data.heroImage?.url || null,
           heroImageId: data.heroImageId || null,
-          content: { sections }
+          content: { sections: hydratedSections }
         });
       })
       .catch(console.error)
@@ -225,8 +238,20 @@ export default function ArticleEditor() {
     const payload = {
       ...article,
       slug: article.slug || createSlug(article.title),
-      // Ensure strictly content is JSON
-      content: article.content
+      // Ensure strictly content is JSON and strip image URLs (dehydration)
+      content: {
+        sections: (article.content?.sections || []).map(section => ({
+          ...section,
+          blocks: (section.blocks || []).map(block => {
+            if (block.type === 'image' && block.fileId) {
+              // Remove value (URL) to rely on fileId
+              const { value, ...rest } = block;
+              return rest;
+            }
+            return block;
+          })
+        }))
+      }
     };
 
     const req = id ? updateArticle(id, payload) : createArticle(payload);

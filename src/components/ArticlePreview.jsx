@@ -47,12 +47,22 @@ export default function ArticlePreview({ data }) {
                 switch (block.type) {
                   case "text":
                     return <p key={block.id} className="text-gray-800 leading-7 whitespace-pre-wrap">{block.value}</p>;
-                  case "image":
+                  case "image": {
+                    let src = block.value;
+                    if (!src && block.fileId && data.contentFiles) {
+                      const file = data.contentFiles.find(f => f.id === block.fileId);
+                      if (file) src = file.url;
+                    }
                     return (
                       <figure key={block.id} className="my-6">
-                        <img src={block.value} alt="" className="w-full rounded-lg shadow-sm" />
+                        {src ? (
+                          <img src={src} alt="" className="w-full rounded-lg shadow-sm" />
+                        ) : (
+                          <div className="text-red-500 text-sm bg-red-50 p-2 rounded">Image not found (ID: {block.fileId})</div>
+                        )}
                       </figure>
                     );
+                  }
                   case "video":
                     return (
                       <div key={block.id} className="my-6 aspect-video bg-black rounded-lg flex items-center justify-center text-white">
