@@ -98,12 +98,25 @@ export default function ArticleEditor() {
       .then((data) => {
         // Map API response which might have includes/joins to editor state
         // The API returns { ..., heroImage: {url, id}, category: {id, name}, content: { sections: [] } }
+        // Sanitize content
+        let content = data.content;
+        if (typeof content === "string") {
+          try {
+            content = JSON.parse(content);
+          } catch (e) {
+            console.error("Failed to parse article content JSON:", e);
+            content = { sections: [] };
+          }
+        }
+        // Ensure content is an object with sections array, stripping any garbage keys
+        const sections = Array.isArray(content?.sections) ? content.sections : [];
+
         setArticle({
           ...data,
           categoryId: data.categoryId,
           hero_url: data.heroImage?.url || null,
           heroImageId: data.heroImageId || null,
-          content: data.content || { sections: [] }
+          content: { sections }
         });
       })
       .catch(console.error)
@@ -118,7 +131,6 @@ export default function ArticleEditor() {
     setArticle((a) => ({
       ...a,
       content: {
-        ...a.content,
         sections: fn(a.content?.sections || [])
       }
     }));
@@ -154,11 +166,18 @@ export default function ArticleEditor() {
       )
     );
 
-  const updateBlock = (sid, bid, value) =>
+  const updateBlock = (sid, bid, payload) =>
     updateSections((s) =>
       s.map((sec) =>
         sec.id === sid
-          ? { ...sec, blocks: (sec.blocks || []).map((block) => block.id === bid ? { ...block, value } : block) }
+          ? {
+            ...sec,
+            blocks: (sec.blocks || []).map((block) =>
+              block.id === bid
+                ? (typeof payload === "object" && payload !== null ? { ...block, ...payload } : { ...block, value: payload })
+                : block
+            )
+          }
           : sec
       )
     );
@@ -190,12 +209,8 @@ export default function ArticleEditor() {
     }
 
     if (mediaCtx.type === "block") {
-      updateBlock(mediaCtx.sectionId, mediaCtx.blockId, url);
-      // NOTE: We are storing URL directly in block value for simplicity.
-      // Ideally we would store { fileId: ... } but the current render logic expects value string.
-      // The backend extractor syncs content file IDs differently.
-      // If we need to reference the ID in content for extraction, we might need a custom attribute.
-      // But keeping it simple: just URL as value.
+      // Store both the URL (for display) and the fileId (for backend linking)
+      updateBlock(mediaCtx.sectionId, mediaCtx.blockId, { value: url, fileId: fileId });
     }
 
     setShowMediaLibrary(false);
