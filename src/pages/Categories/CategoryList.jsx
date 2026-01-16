@@ -167,7 +167,7 @@ export default function CategoryList() {
 
       {/* LIST */}
       <div className="space-y-3">
-        {loading ? (<LoadingSpinner txt="articles" />) : categories.length === 0 ? (
+        {loading ? (<LoadingSpinner txt="categories" />) : categories.length === 0 ? (
           <div className="text-center text-gray-400 py-8">No categories found.</div>
         ) : (
           categories.map((cat) => (

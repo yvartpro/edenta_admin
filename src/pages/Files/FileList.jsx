@@ -58,12 +58,20 @@ export default function FileList() {
     setPage(1);
   };
 
+  const generateId = () => {
+    try {
+      return crypto.randomUUID();
+    } catch {
+      return Date.now().toString(36) + Math.random().toString(36).substring(2);
+    }
+  };
+
   const handleUpload = (e) => {
     const selectedFiles = Array.from(e.target.files || []);
     if (selectedFiles.length === 0) return;
 
     const newEntries = selectedFiles.map(file => ({
-      id: crypto.randomUUID(),
+      id: generateId(),
       name: file.name,
       file,
       progress: 0,

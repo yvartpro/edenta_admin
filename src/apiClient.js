@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/edenta/api';
+const API_URL = import.meta.env.VITE_API_URL || `http://${window.location.hostname}:4000/edenta/api`;
 
 const apiClient = axios.create({
   baseURL: API_URL,
