@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Plus, Edit2, Trash2, FileText, CheckCircle, Circle } from "lucide-react";
 import { getArticles, deleteArticle } from "../../services/articles.api";
+import { getCachedData, setCachedData, clearCache } from "../../services/helper";
 import { clsx } from "clsx";
-import { LoadingSpinner, EdentaButton, ConfirmModal } from "../../components/MyUtilities";
+import { LoadingSpinner, EdentaButton, ConfirmModal, SearchInput, Pagination } from "../../components/MyUtilities";
 
 export default function ArticleList() {
   const [articles, setArticles] = useState([]);
@@ -12,16 +13,35 @@ export default function ArticleList() {
   const [articleToDelete, setArticleToDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  // Pagination & Search state
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [search, setSearch] = useState("");
+  const [totalCount, setTotalCount] = useState(0);
 
-  const fetchData = async () => {
+
+
+  const fetchData = useCallback(async () => {
+    const params = { page, search, limit: 15 };
+    const cached = getCachedData('articles', params);
+
+    if (cached) {
+      setArticles(cached.data);
+      setTotalPages(cached.totalPages);
+      setTotalCount(cached.total);
+      return;
+    }
+
     setLoading(true);
     try {
-      const data = await getArticles();
-      if (Array.isArray(data)) {
-        setArticles(data);
+      const response = await getArticles(params);
+      if (response && response.data) {
+        setArticles(response.data);
+        setTotalPages(response.totalPages);
+        setTotalCount(response.total);
+        setCachedData('articles', params, response);
+      } else if (Array.isArray(response)) {
+        setArticles(response);
       } else {
         setArticles([]);
       }
@@ -31,6 +51,15 @@ export default function ArticleList() {
     } finally {
       setLoading(false);
     }
+  }, [page, search]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const handleSearch = (val) => {
+    setSearch(val);
+    setPage(1); // Reset to first page on search
   };
 
   const initiateDelete = (article) => {
@@ -44,6 +73,7 @@ export default function ArticleList() {
     try {
       await deleteArticle(articleToDelete.id);
       setArticles(prev => prev.filter(a => a.id !== articleToDelete.id));
+      clearCache('articles'); // Invalidate cache on change
       setDeleteModalOpen(false);
       setArticleToDelete(null);
     } catch (error) {
@@ -69,11 +99,21 @@ export default function ArticleList() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Articles</h1>
-        <Link to="/articles/new">
-          <EdentaButton icon={Plus} mobileIconOnly>Create Article</EdentaButton>
-        </Link>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Articles</h1>
+          <p className="text-sm text-gray-500">{totalCount} total articles found</p>
+        </div>
+        <div className="flex w-full md:w-auto gap-3">
+          <SearchInput
+            value={search}
+            onChange={handleSearch}
+            className="flex-1 md:w-64"
+          />
+          <Link to="/articles/new">
+            <EdentaButton icon={Plus} mobileIconOnly>Create Article</EdentaButton>
+          </Link>
+        </div>
       </div>
 
       <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
@@ -191,10 +231,19 @@ export default function ArticleList() {
                   ))}
                 </tbody>
               </table>
+              {/* PAGINATION */}
+              <div className="p-4 border-t border-gray-100 flex justify-center">
+                <Pagination
+                  currentPage={page}
+                  totalPages={totalPages}
+                  onPageChange={setPage}
+                />
+              </div>
             </div>
           </>
         )}
       </div>
+
       <ConfirmModal
         isOpen={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}

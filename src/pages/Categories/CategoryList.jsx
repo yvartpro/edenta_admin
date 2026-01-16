@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Plus, Edit2, Trash2, Save, X } from "lucide-react";
 import apiClient from "../../apiClient";
-import { Card, IconBtn, LoadingSpinner, EdentaButton, ConfirmModal } from "../../components/MyUtilities";
+import { getCachedData, setCachedData, clearCache } from "../../services/helper";
+import { Card, IconBtn, LoadingSpinner, EdentaButton, ConfirmModal, SearchInput, Pagination } from "../../components/MyUtilities";
 
 export default function CategoryList() {
   const [categories, setCategories] = useState([]);
@@ -15,20 +16,48 @@ export default function CategoryList() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
+  // Pagination & Search
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [search, setSearch] = useState("");
+  const [totalCount, setTotalCount] = useState(0);
 
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
+    const params = { page, search, limit: 15 };
+    const cached = getCachedData('categories', params);
+
+    if (cached) {
+      setCategories(cached.data);
+      setTotalPages(cached.totalPages);
+      setTotalCount(cached.total);
+      return;
+    }
+
     setLoading(true);
     try {
-      const data = await apiClient.get("/category");
-      setCategories(data);
+      const response = await apiClient.get("/category", { params });
+      if (response && response.data) {
+        setCategories(response.data);
+        setTotalPages(response.totalPages);
+        setTotalCount(response.total);
+        setCachedData('categories', params, response);
+      } else if (Array.isArray(response)) {
+        setCategories(response);
+      }
     } catch (err) {
       console.error(err);
     } finally {
       setLoading(false);
     }
+  }, [page, search]);
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
+
+  const handleSearch = (val) => {
+    setSearch(val);
+    setPage(1);
   };
 
   const handleCreate = () => {
@@ -37,6 +66,7 @@ export default function CategoryList() {
     apiClient.post("/category", { name: newName })
       .then(() => {
         setNewName("");
+        clearCache('categories');
         fetchCategories();
       })
       .catch(error => {
@@ -63,6 +93,7 @@ export default function CategoryList() {
     apiClient.put(`/category/${id}`, { name: editName })
       .then(() => {
         setEditingId(null);
+        clearCache('categories');
         fetchCategories();
       })
       .catch(error => {
@@ -85,6 +116,7 @@ export default function CategoryList() {
     apiClient.delete(`/category/${categoryToDelete.id}`)
       .then(() => {
         setCategories(categories.filter(c => c.id !== categoryToDelete.id));
+        clearCache('categories');
         setDeleteModalOpen(false);
         setCategoryToDelete(null);
       })
@@ -99,7 +131,17 @@ export default function CategoryList() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold text-gray-900 mb-8">Categories</h1>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Categories</h1>
+          <p className="text-sm text-gray-500">{totalCount} total categories</p>
+        </div>
+        <SearchInput
+          value={search}
+          onChange={handleSearch}
+          className="w-full md:w-64"
+        />
+      </div>
 
       {/* CREATE NEW */}
       <Card className="mb-8 bg-pink-50 border-pink-100">
@@ -186,6 +228,15 @@ export default function CategoryList() {
             </div>
           ))
         )}
+
+        {/* PAGINATION */}
+        <div className="flex justify-center mt-4">
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
+        </div>
       </div>
 
       <ConfirmModal

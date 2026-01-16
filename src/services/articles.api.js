@@ -1,7 +1,7 @@
 import apiClient from "../apiClient";
 
-export const getArticles = async () => {
-    return apiClient.get("/article");
+export const getArticles = async (params = {}) => {
+    return apiClient.get("/article", { params });
 };
 
 export const getArticleById = async (id) => {

@@ -77,13 +77,10 @@ export default function ArticleEditor() {
   // Load Categories on Mount
   useEffect(() => {
     apiClient.get("/category")
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setCategories(data);
-        } else {
-          console.error("Categories API response is not an array:", data);
-          setCategories([]);
-        }
+      .then((response) => {
+        // Handle both wrapped and unwrapped response
+        const data = response.data || (Array.isArray(response) ? response : []);
+        setCategories(data);
       })
       .catch((err) => {
         console.error("Failed to load categories:", err);

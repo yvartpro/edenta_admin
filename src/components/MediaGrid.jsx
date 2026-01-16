@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import apiClient from "../apiClient";
 import { Image as ImageIcon, Film, Check } from "lucide-react";
 import { clsx } from "clsx";
@@ -8,27 +8,30 @@ export default function MediaGrid({ onSelect, multiSelect = false, initialSelect
   const [loading, setLoading] = useState(false);
   const [selectedIds, setSelectedIds] = useState(new Set(initialSelectedIds));
 
-  useEffect(() => {
-    if (initialSelectedIds) {
-      setSelectedIds(new Set(initialSelectedIds));
-    }
-  }, [JSON.stringify(initialSelectedIds)]); // Deep compare logic simplistic
 
-  useEffect(() => {
-    fetchFiles();
-  }, []);
+  const initialIdsString = useMemo(() => JSON.stringify(initialSelectedIds), [initialSelectedIds]);
 
-  const fetchFiles = async () => {
+  const fetchFiles = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await apiClient.get("/file");
-      setFiles(data);
+      const response = await apiClient.get("/file");
+      // Handle both wrapped and unwrapped response for safety
+      const fetchedFiles = response.data || (Array.isArray(response) ? response : []);
+      setFiles(fetchedFiles);
     } catch (err) {
       console.error(err);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchFiles();
+  }, [fetchFiles]);
+
+  useEffect(() => {
+    setSelectedIds(new Set(JSON.parse(initialIdsString)));
+  }, [initialIdsString]);
 
   const toggleSelection = (file) => {
     const newSet = new Set(selectedIds);

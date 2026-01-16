@@ -1,6 +1,7 @@
 import React from 'react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const classNames = (...inputs) => twMerge(clsx(inputs));
@@ -154,6 +155,99 @@ export const ConfirmModal = ({ isOpen, onClose, onConfirm, title, message, confi
           </EdentaButton>
         </div>
       </div>
+    </div>
+  );
+};
+
+export const SearchInput = ({ value, onChange, placeholder = "Search...", className }) => {
+  const [localValue, setLocalValue] = React.useState(value);
+
+  React.useEffect(() => {
+    setLocalValue(value);
+  }, [value]);
+
+  React.useEffect(() => {
+    const handler = setTimeout(() => {
+      if (localValue !== value) {
+        onChange(localValue);
+      }
+    }, 500);
+
+    return () => clearTimeout(handler);
+  }, [localValue, onChange, value]);
+
+  return (
+    <div className={classNames("relative", className)}>
+      <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+      <input
+        type="text"
+        className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 bg-white outline-none transition-all"
+        placeholder={placeholder}
+        value={localValue}
+        onChange={(e) => setLocalValue(e.target.value)}
+      />
+    </div>
+  );
+};
+
+export const Pagination = ({ currentPage, totalPages, onPageChange, className }) => {
+  if (totalPages <= 1) return null;
+
+  const getPages = () => {
+    const pages = [];
+    const maxVisiblePages = 5;
+
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+      let start = Math.max(1, currentPage - 2);
+      let end = Math.min(totalPages, start + maxVisiblePages - 1);
+
+      if (end === totalPages) {
+        start = Math.max(1, end - maxVisiblePages + 1);
+      }
+
+      for (let i = start; i <= end; i++) pages.push(i);
+    }
+    return pages;
+  };
+
+  return (
+    <div className={classNames("flex items-center justify-center gap-2 mt-8", className)}>
+      <EdentaButton
+        variant="secondary"
+        className="p-2 min-w-0"
+        disabled={currentPage === 1}
+        onClick={() => onPageChange(currentPage - 1)}
+      >
+        <ChevronLeft size={18} />
+      </EdentaButton>
+
+      <div className="flex gap-1">
+        {getPages().map(page => (
+          <button
+            key={page}
+            onClick={() => onPageChange(page)}
+            className={classNames(
+              "w-10 h-10 rounded-md font-medium transition-all text-sm",
+              currentPage === page
+                ? "bg-pink-600 text-white shadow-md"
+                : "bg-white border border-gray-200 text-gray-600 hover:border-pink-300 hover:text-pink-600"
+            )}
+          >
+            {page}
+          </button>
+        ))}
+      </div>
+
+      <EdentaButton
+        variant="secondary"
+        className="p-2 min-w-0"
+        disabled={currentPage === totalPages}
+        onClick={() => onPageChange(currentPage + 1)}
+      >
+        <ChevronRight size={18} />
+      </EdentaButton>
     </div>
   );
 };
