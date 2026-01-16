@@ -108,7 +108,7 @@ export default function FileList() {
                 )}
               </div>
               <div className="p-2 flex justify-between items-center bg-white border-t border-gray-100">
-                <span className="text-xs text-gray-500 truncate flex-1" title={file.alt || "No Name"}>
+                <span className="text-xs text-gray-500 break-words line-clamp-3 flex-1" title={file.alt || "No Name"}>
                   {file.alt || "Unnamed File"}
                 </span>
                 <button

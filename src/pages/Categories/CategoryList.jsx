@@ -158,7 +158,7 @@ export default function CategoryList() {
               ) : (
                 <>
                   <div>
-                    <h3 className="font-semibold text-gray-800">{cat.name}</h3>
+                    <h3 className="font-semibold text-gray-800 break-words line-clamp-3">{cat.name}</h3>
                     <p className="text-xs text-gray-400 font-mono">slug: {cat.slug}</p>
                   </div>
                   <div className="flex items-center gap-2 transition-opacity">

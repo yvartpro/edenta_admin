@@ -12,11 +12,11 @@ export default function ArticlePreview({ data }) {
         <span className="text-pink-600 font-bold uppercase text-xs tracking-wider">
           {data.category?.name || "Uncategorized"}
         </span>
-        <h1 className="text-3xl font-extrabold text-gray-900 leading-tight mt-2 mb-3">
+        <h1 className="text-3xl font-extrabold text-gray-900 leading-tight mt-2 mb-3 break-words whitespace-normal">
           {data.title || "Untitled Article"}
         </h1>
         {data.subtitle && (
-          <h2 className="text-xl text-gray-500 font-medium leading-snug mb-4">
+          <h2 className="text-xl text-gray-500 font-medium leading-snug mb-4 break-words whitespace-normal">
             {data.subtitle}
           </h2>
         )}
@@ -39,7 +39,7 @@ export default function ArticlePreview({ data }) {
         {sections.map((section) => (
           <section key={section.id}>
             {section.title && (
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">{section.title}</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4 break-words whitespace-normal">{section.title}</h3>
             )}
 
             <div className="space-y-6">

@@ -109,7 +109,7 @@ export default function ArticleList() {
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between items-start">
                       <div>
-                        <h4 className="font-semibold text-gray-900 truncate pr-2">{article.title}</h4>
+                        <h4 className="font-semibold text-gray-900 break-words line-clamp-3 pr-2">{article.title}</h4>
                         <p className="text-xs text-gray-500 mb-2">{new Date(article.createdAt).toLocaleDateString()}</p>
                       </div>
                       <StatusBadge status={article.status} />
