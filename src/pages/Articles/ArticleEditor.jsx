@@ -304,13 +304,13 @@ export default function ArticleEditor() {
       <div className="lg:hidden flex border-b border-gray-200 bg-white shrink-0">
         <button
           onClick={() => setMobileTab('editor')}
-          className={`flex-1 py-3 text-sm font-bold border-b-2 ${mobileTab === 'editor' ? 'border-indigo-600 text-indigo-700' : 'border-transparent text-gray-500'}`}
+          className={`flex-1 py-3 text-sm font-bold border-b-2 ${mobileTab === 'editor' ? 'border-pink-600 text-pink-700' : 'border-transparent text-gray-500'}`}
         >
           Editor
         </button>
         <button
           onClick={() => setMobileTab('preview')}
-          className={`flex-1 py-3 text-sm font-bold border-b-2 ${mobileTab === 'preview' ? 'border-indigo-600 text-indigo-700' : 'border-transparent text-gray-500'}`}
+          className={`flex-1 py-3 text-sm font-bold border-b-2 ${mobileTab === 'preview' ? 'border-pink-600 text-pink-700' : 'border-transparent text-gray-500'}`}
         >
           Preview
         </button>
@@ -335,7 +335,7 @@ export default function ArticleEditor() {
             <select
               value={article.categoryId || ""}
               onChange={(e) => setField("categoryId", e.target.value || null)}
-              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border"
+              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500 sm:text-sm p-2.5 border"
             >
               <option value="">Select Category...</option>
               {categories.map((cat) => (
@@ -349,7 +349,7 @@ export default function ArticleEditor() {
             <select
               value={article.status}
               onChange={(e) => setField("status", e.target.value)}
-              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2.5 border"
+              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500 sm:text-sm p-2.5 border"
             >
               <option value="draft">Draft</option>
               <option value="published">Published</option>
@@ -379,7 +379,7 @@ export default function ArticleEditor() {
         {/* SECTIONS */}
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-bold text-gray-800">Content Sections</h3>
-          <button onClick={addSection} className="text-sm text-indigo-600 font-semibold hover:underline">+ Add Section</button>
+          <button onClick={addSection} className="text-sm text-pink-600 font-semibold hover:underline">+ Add Section</button>
         </div>
 
         <DndContext
@@ -398,7 +398,7 @@ export default function ArticleEditor() {
             {(article.content?.sections || []).map((section) => (
               <SortableSection key={section.id} id={section.id}>
                 {({ attributes, listeners }) => (
-                  <Card className="mb-4 border-l-4 border-l-indigo-500">
+                  <Card className="mb-4 border-l-4 border-l-pink-500">
                     <div className="flex items-center gap-3 mb-4 pb-3 border-b border-gray-100">
                       <span {...attributes} {...listeners} className="cursor-grab text-gray-400 hover:text-gray-600">
                         <Hand size={18} />
@@ -409,7 +409,7 @@ export default function ArticleEditor() {
                         value={section.title}
                         onChange={(e) => updateSections(s => s.map(x => x.id === section.id ? { ...x, title: e.target.value } : x))}
                       />
-                      <button onClick={() => collapseSection(section.id)} className="text-xs text-indigo-600 font-medium">
+                      <button onClick={() => collapseSection(section.id)} className="text-xs text-pink-600 font-medium">
                         {collapsedSections[section.id] ? "Expand" : "Collapse"}
                       </button>
                       <IconBtn onClick={() => removeSection(section.id)} className="text-gray-400 hover:text-red-500">
@@ -434,7 +434,7 @@ export default function ArticleEditor() {
                                     onChange={(e) => updateBlock(section.id, block.id, e.target.value)}
                                     placeholder="Media URL"
                                   />
-                                  <button onClick={() => openMedia(section.id, block.id)} className="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded">Browse</button>
+                                  <button onClick={() => openMedia(section.id, block.id)} className="text-xs bg-pink-100 text-pink-700 px-2 py-1 rounded">Browse</button>
                                 </div>
                                 {block.value && <img src={block.value} className="mt-2 max-h-32 rounded border" />}
                               </div>
@@ -451,7 +451,7 @@ export default function ArticleEditor() {
                                       <option value="grid">Grid</option>
                                       <option value="masonry">Masonry</option>
                                     </select>
-                                    <button onClick={() => openMedia(section.id, block.id, "gallery")} className="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded">
+                                    <button onClick={() => openMedia(section.id, block.id, "gallery")} className="text-xs bg-pink-100 text-pink-700 px-2 py-1 rounded">
                                       Select Images
                                     </button>
                                   </div>

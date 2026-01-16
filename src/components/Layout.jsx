@@ -32,7 +32,7 @@ export default function Layout() {
         )}
       >
         <div className="h-16 flex items-center justify-between px-6 border-b border-gray-100">
-          <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+          <span className="text-xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
             EDENTA
           </span>
           <button
@@ -54,7 +54,7 @@ export default function Layout() {
                 className={classNames(
                   "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors",
                   isActive
-                    ? "bg-indigo-50 text-indigo-700"
+                    ? "bg-pink-50 text-pink-700"
                     : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                 )}
               >
@@ -67,7 +67,7 @@ export default function Layout() {
 
         <div className="p-4 border-t border-gray-100">
           <div className="flex items-center gap-3 px-4 py-2">
-            <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-xs">
+            <div className="w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center text-pink-700 font-bold text-xs">
               AD
             </div>
             <div className="text-xs">

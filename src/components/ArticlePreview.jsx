@@ -9,7 +9,7 @@ export default function ArticlePreview({ data }) {
     <div className="max-w-xl mx-auto font-sans">
       {/* HEADER */}
       <div className="mb-8">
-        <span className="text-indigo-600 font-bold uppercase text-xs tracking-wider">
+        <span className="text-pink-600 font-bold uppercase text-xs tracking-wider">
           {data.category?.name || "Uncategorized"}
         </span>
         <h1 className="text-3xl font-extrabold text-gray-900 leading-tight mt-2 mb-3">

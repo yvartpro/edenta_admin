@@ -60,7 +60,7 @@ export default function ArticleList() {
         <h1 className="text-2xl font-bold text-gray-900">Articles</h1>
         <Link
           to="/articles/new"
-          className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors font-medium"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700 transition-colors font-medium"
         >
           <Plus size={18} />
           Create Article
@@ -77,7 +77,7 @@ export default function ArticleList() {
             <p className="text-gray-500 mt-1 mb-6">Create your first article to get started.</p>
             <Link
               to="/articles/new"
-              className="text-indigo-600 hover:text-indigo-800 font-medium"
+              className="text-pink-600 hover:text-pink-800 font-medium"
             >
               Create New Article &rarr;
             </Link>
@@ -111,7 +111,7 @@ export default function ArticleList() {
                         {article.category?.name || "Uncategorized"}
                       </span>
                       <div className="flex gap-3">
-                        <Link to={`/articles/${article.id}`} className="text-indigo-600 p-1">
+                        <Link to={`/articles/${article.id}`} className="text-pink-600 p-1">
                           <Edit2 size={18} />
                         </Link>
                         <button onClick={() => handleDelete(article.id)} className="text-red-400 p-1">
@@ -167,7 +167,7 @@ export default function ArticleList() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Link to={`/articles/${article.id}`} className="text-indigo-600 hover:text-indigo-900">
+                          <Link to={`/articles/${article.id}`} className="text-pink-600 hover:text-pink-900">
                             <Edit2 size={18} />
                           </Link>
                           <button

@@ -59,7 +59,7 @@ export default function MediaGrid({ onSelect, multiSelect = false, initialSelect
                 onClick={() => toggleSelection(file)}
                 className={clsx(
                   "cursor-pointer group relative border rounded-lg overflow-hidden aspect-square hover:shadow-md transition-all",
-                  isSelected ? "ring-2 ring-indigo-500 border-transparent" : "border-gray-200"
+                  isSelected ? "ring-2 ring-pink-500 border-transparent" : "border-gray-200"
                 )}
               >
                 {file.type === "image" ? (
@@ -71,7 +71,7 @@ export default function MediaGrid({ onSelect, multiSelect = false, initialSelect
                 )}
 
                 {isSelected && (
-                  <div className="absolute top-2 right-2 bg-indigo-600 text-white p-1 rounded-full shadow-sm">
+                  <div className="absolute top-2 right-2 bg-pink-600 text-white p-1 rounded-full shadow-sm">
                     <Check size={12} />
                   </div>
                 )}
