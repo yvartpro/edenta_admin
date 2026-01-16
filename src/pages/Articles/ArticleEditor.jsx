@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Hand, Trash2, X, Plus } from "lucide-react"; // Replaced HandGrab with Hand
-import { Card, Header, Input, Textarea, Select, IconBtn, BlockBar, ButtonLoadingSpinner } from "../../components/MyUtilities";
+import { Card, Header, Input, Textarea, Select, IconBtn, BlockBar, ButtonLoadingSpinner, EdentaButton } from "../../components/MyUtilities";
 import {
   DndContext,
   closestCenter
@@ -365,12 +365,12 @@ export default function ArticleEditor() {
                 readOnly
                 placeholder="No image selected"
               />
-              <button
+              <EdentaButton
+                variant="secondary"
                 onClick={openHeroMedia}
-                className="px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
               >
                 Select Media
-              </button>
+              </EdentaButton>
             </div>
             {article.hero_url && <img src={article.hero_url} alt="Hero" className="mt-2 h-24 rounded object-cover border" />}
           </div>
@@ -379,7 +379,7 @@ export default function ArticleEditor() {
         {/* SECTIONS */}
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-bold text-gray-800">Content Sections</h3>
-          <button onClick={addSection} className="text-sm text-pink-600 font-semibold hover:underline">+ Add Section</button>
+          <EdentaButton onClick={addSection} variant="ghost" className="text-pink-600 hover:text-pink-700 hover:bg-pink-50">+ Add Section</EdentaButton>
         </div>
 
         <DndContext
@@ -434,7 +434,7 @@ export default function ArticleEditor() {
                                     onChange={(e) => updateBlock(section.id, block.id, e.target.value)}
                                     placeholder="Media URL"
                                   />
-                                  <button onClick={() => openMedia(section.id, block.id)} className="text-xs bg-pink-100 text-pink-700 px-2 py-1 rounded">Browse</button>
+                                  <EdentaButton variant="secondary" onClick={() => openMedia(section.id, block.id)} className="text-xs px-2 py-1">Browse</EdentaButton>
                                 </div>
                                 {block.value && <img src={block.value} className="mt-2 max-h-32 rounded border" />}
                               </div>
@@ -451,9 +451,9 @@ export default function ArticleEditor() {
                                       <option value="grid">Grid</option>
                                       <option value="masonry">Masonry</option>
                                     </select>
-                                    <button onClick={() => openMedia(section.id, block.id, "gallery")} className="text-xs bg-pink-100 text-pink-700 px-2 py-1 rounded">
+                                    <EdentaButton variant="secondary" onClick={() => openMedia(section.id, block.id, "gallery")} className="text-xs px-2 py-1">
                                       Select Images
-                                    </button>
+                                    </EdentaButton>
                                   </div>
                                 </div>
                                 <div className="grid grid-cols-4 gap-2">

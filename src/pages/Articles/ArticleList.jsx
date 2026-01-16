@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Plus, Edit2, Trash2, FileText, CheckCircle, Circle } from "lucide-react";
 import { getArticles, deleteArticle } from "../../services/articles.api";
 import { clsx } from "clsx";
-import { LoadingSpinner } from "../../components/MyUtilities";
+import { LoadingSpinner, EdentaButton } from "../../components/MyUtilities";
 
 export default function ArticleList() {
   const [articles, setArticles] = useState([]);
@@ -58,12 +58,8 @@ export default function ArticleList() {
     <div>
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold text-gray-900">Articles</h1>
-        <Link
-          to="/articles/new"
-          className="inline-flex items-center gap-2 px-4 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700 transition-colors font-medium"
-        >
-          <Plus size={18} />
-          Create Article
+        <Link to="/articles/new">
+          <EdentaButton icon={Plus}>Create Article</EdentaButton>
         </Link>
       </div>
 

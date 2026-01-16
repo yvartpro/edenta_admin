@@ -5,6 +5,29 @@ import { twMerge } from 'tailwind-merge';
 // eslint-disable-next-line react-refresh/only-export-components
 export const classNames = (...inputs) => twMerge(clsx(inputs));
 
+export const EdentaButton = ({ children, icon: Icon, onClick, loading, disabled, className, variant = "primary", type = "button" }) => {
+  const baseStyles = "px-4 py-2 rounded-md font-medium transition-colors flex items-center gap-2 justify-center disabled:opacity-50 disabled:cursor-not-allowed";
+  const variants = {
+    primary: "bg-pink-600 text-white hover:bg-pink-700 border border-transparent shadow-sm",
+    secondary: "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 shadow-sm",
+    danger: "bg-red-600 text-white hover:bg-red-700 border border-transparent shadow-sm",
+    ghost: "text-gray-500 hover:bg-gray-100 hover:text-gray-900",
+    outline: "border-2 border-pink-600 text-pink-600 hover:bg-pink-50",
+  };
+
+  return (
+    <button
+      type={type}
+      onClick={onClick}
+      disabled={loading || disabled}
+      className={classNames(baseStyles, variants[variant] || variants.primary, className)}
+    >
+      {loading ? <ButtonLoadingSpinner /> : Icon && <Icon size={18} />}
+      {children}
+    </button>
+  );
+};
+
 export const Card = ({ children, className }) =>
   <div className={classNames("bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6", className)}>
     {children}
@@ -22,12 +45,9 @@ export const Header = ({ title, action, onAction }) =>
   <div className="flex justify-between items-center mb-6">
     <h2 className="text-xl font-bold text-gray-900">{title}</h2>
     {action && onAction && (
-      <button
-        onClick={onAction}
-        className="px-4 py-2 bg-pink-600 text-white text-sm font-medium rounded-md hover:bg-pink-700 transition-colors"
-      >
+      <EdentaButton onClick={onAction}>
         {action}
-      </button>
+      </EdentaButton>
     )}
   </div>
 

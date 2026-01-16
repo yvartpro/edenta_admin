@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Upload, Trash2, Image as ImageIcon, Film } from "lucide-react";
 import apiClient from "../../apiClient";
-import { Card, Header, IconBtn, ButtonLoadingSpinner, LoadingSpinner } from "../../components/MyUtilities";
+import { Card, Header, IconBtn, LoadingSpinner, EdentaButton } from "../../components/MyUtilities";
 
 export default function FileList() {
   const [files, setFiles] = useState([]);
@@ -67,12 +67,15 @@ export default function FileList() {
             onChange={handleUpload}
             accept="image/*,video/*"
           />
-          <label
+          <EdentaButton
+            as="label"
             htmlFor="file-upload"
-            className={`cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors ${uploading ? 'opacity-70 cursor-not-allowed' : ''}`}
+            loading={uploading}
+            icon={Upload}
+            className={`cursor-pointer ${uploading ? 'opacity-70 cursor-not-allowed' : ''}`}
           >
-            {uploading ? <>Uploading... <ButtonLoadingSpinner /></> : <><Upload size={18} /> Upload New File</>}
-          </label>
+            Upload New File
+          </EdentaButton>
         </div>
       </div>
 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Plus, Edit2, Trash2, Save, X } from "lucide-react";
 import apiClient from "../../apiClient";
-import { Card, IconBtn, LoadingSpinner, ButtonLoadingSpinner } from "../../components/MyUtilities";
+import { Card, IconBtn, LoadingSpinner, EdentaButton } from "../../components/MyUtilities";
 
 export default function CategoryList() {
   const [categories, setCategories] = useState([]);
@@ -103,14 +103,14 @@ export default function CategoryList() {
             onChange={(e) => setNewName(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
           />
-          <button
+          <EdentaButton
             onClick={handleCreate}
             disabled={!newName.trim()}
-            className="px-4 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700 disabled:opacity-50 transition-colors font-medium flex items-center gap-2"
+            loading={savingNew}
+            icon={Plus}
           >
-            {savingNew ? <><ButtonLoadingSpinner /> Saving</> : <><Plus size={18} /> Create</>}
-
-          </button>
+            Create
+          </EdentaButton>
         </div>
       </Card>
 
@@ -129,12 +129,20 @@ export default function CategoryList() {
                     onChange={(e) => setEditName(e.target.value)}
                     autoFocus
                   />
-                  <IconBtn onClick={() => saveEdit(cat.id)} className="text-green-600 bg-green-50 hover:bg-green-100">
-                    {savingEdit ? <ButtonLoadingSpinner /> : <Save size={16} />}
-                  </IconBtn>
-                  <IconBtn onClick={cancelEdit} className="text-gray-500 hover:text-gray-700">
-                    <X size={16} />
-                  </IconBtn>
+                  <EdentaButton
+                    onClick={() => saveEdit(cat.id)}
+                    disabled={!editName.trim()}
+                    loading={savingEdit}
+                    icon={Save}
+                  >
+                    Save
+                  </EdentaButton>
+                  <EdentaButton
+                    onClick={cancelEdit}
+                    icon={X}
+                  >
+                    Cancel
+                  </EdentaButton>
                 </div>
               ) : (
                 <>
@@ -143,12 +151,20 @@ export default function CategoryList() {
                     <p className="text-xs text-gray-400 font-mono">slug: {cat.slug}</p>
                   </div>
                   <div className="flex items-center gap-2 transition-opacity">
-                    <IconBtn onClick={() => startEdit(cat)} className="hover:text-pink-600 text-gray-400">
-                      <Edit2 size={16} />
-                    </IconBtn>
-                    <IconBtn onClick={() => handleDelete(cat.id)} className="hover:text-red-600 text-gray-400">
-                      {deleting ? <ButtonLoadingSpinner /> : <Trash2 size={16} />}
-                    </IconBtn>
+                    <EdentaButton
+                      onClick={() => startEdit(cat)}
+                      icon={Edit2}
+                    >
+                      Edit
+                    </EdentaButton>
+                    <EdentaButton
+                      onClick={() => handleDelete(cat.id)}
+                      icon={Trash2}
+                      disabled={deleting}
+                      loading={deleting}
+                    >
+                      Delete
+                    </EdentaButton>
                   </div>
                 </>
               )}
