@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Hand, Trash2, X, Plus } from "lucide-react"; // Replaced HandGrab with Hand
-import { Card, Header, Input, Textarea, Select, IconBtn, BlockBar } from "../../components/MyUtilities";
+import { Card, Header, Input, Textarea, Select, IconBtn, BlockBar, ButtonLoadingSpinner } from "../../components/MyUtilities";
 import {
   DndContext,
   closestCenter
@@ -228,7 +228,7 @@ export default function ArticleEditor() {
       <div className="w-1/2 overflow-y-auto p-8 border-r border-gray-200">
         <Header
           title={id ? "Edit Article" : "Create Article"}
-          action={saving ? "Saving..." : "Save Article"}
+          action={saving ? <>Saving... <ButtonLoadingSpinner /></> : "Save Article"}
           onAction={save}
         />
 

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Plus, Edit2, Trash2, FileText, CheckCircle, Circle } from "lucide-react";
 import { getArticles, deleteArticle } from "../../services/articles.api";
 import { clsx } from "clsx";
+import { LoadingSpinner } from "../../components/MyUtilities";
 
 export default function ArticleList() {
   const [articles, setArticles] = useState([]);
@@ -16,11 +17,9 @@ export default function ArticleList() {
     setLoading(true);
     try {
       const data = await getArticles();
-      console.log("Fetched articles data:", data);
       if (Array.isArray(data)) {
         setArticles(data);
       } else {
-        console.error("API did not return an array", data);
         setArticles([]);
       }
     } catch (err) {
@@ -31,7 +30,6 @@ export default function ArticleList() {
     }
   };
 
-  console.log(articles)
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this article? This cannot be undone.")) return;
     try {
@@ -70,9 +68,7 @@ export default function ArticleList() {
       </div>
 
       <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-        {loading ? (
-          <div className="p-8 text-center text-gray-500">Loading articles...</div>
-        ) : articles.length === 0 ? (
+        {loading ? (<LoadingSpinner txt="articles" />) : articles.length === 0 ? (
           <div className="p-12 text-center">
             <div className="bg-gray-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
               <FileText className="text-gray-400" size={32} />

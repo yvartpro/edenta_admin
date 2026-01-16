@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Upload, Trash2, Image as ImageIcon, Film } from "lucide-react";
 import apiClient from "../../apiClient";
-import { Card, Header, IconBtn, ButtonLoadingSpinner } from "../../components/MyUtilities";
+import { Card, Header, IconBtn, ButtonLoadingSpinner, LoadingSpinner } from "../../components/MyUtilities";
 
 export default function FileList() {
   const [files, setFiles] = useState([]);
@@ -71,14 +71,12 @@ export default function FileList() {
             htmlFor="file-upload"
             className={`cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors ${uploading ? 'opacity-70 cursor-not-allowed' : ''}`}
           >
-            {uploading ? "Uploading..." : <><Upload size={18} /> Upload New File</>}
+            {uploading ? <>Uploading... <ButtonLoadingSpinner /></> : <><Upload size={18} /> Upload New File</>}
           </label>
         </div>
       </div>
 
-      {loading ? (
-        <div className="text-center py-10 text-gray-500">Loading files...</div>
-      ) : (
+      {loading ? (<LoadingSpinner txt="files" />) : (
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {files.map((file) => (
             <div key={file.id} className="group relative bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
@@ -110,7 +108,7 @@ export default function FileList() {
 
       {!loading && files.length === 0 && (
         <div className="text-center py-12 bg-white rounded-lg border border-dashed border-gray-300">
-          <ImageIcon className="mx-auto h-12 w-12 text-gray-300" />
+          <ImageIcon className="mx-auto h-12 w-12 text-gray-300" htmlFor="file-upload" />
           <h3 className="mt-2 text-sm font-medium text-gray-900">No files uploaded</h3>
           <p className="mt-1 text-sm text-gray-500">Upload an image or video to get started.</p>
         </div>
