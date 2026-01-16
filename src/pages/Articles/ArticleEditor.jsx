@@ -245,7 +245,7 @@ export default function ArticleEditor() {
           blocks: (section.blocks || []).map(block => {
             if (block.type === 'image' && block.fileId) {
               // Remove value (URL) to rely on fileId
-              const { value, ...rest } = block;
+              const { ...rest } = block;
               return rest;
             }
             return block;

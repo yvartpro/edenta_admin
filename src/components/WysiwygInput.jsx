@@ -1,24 +1,39 @@
-import { useRef, useEffect } from "react";
+import ReactQuill from 'react-quill-new';
+import 'react-quill-new/dist/quill.snow.css';
 
+/**
+ * Toolbar configuration including color and lists as requested.
+ */
+const modules = {
+    toolbar: [
+        ['bold', 'italic', 'underline'],
+        [{ list: 'ordered' }, { list: 'bullet' }],
+        [{ color: [] }],
+        ['clean'],
+    ],
+};
 
-export default function WysiwygInput({ value, onChange, placeholder = "Type your text here..." }) {
-    const textareaRef = useRef(null);
+const formats = [
+    'bold',
+    'italic',
+    'underline',
+    'list',
+    'color'
+];
 
-    // Auto-resize
-    useEffect(() => {
-        if (textareaRef.current) {
-            textareaRef.current.style.height = "auto";
-            textareaRef.current.style.height = textareaRef.current.scrollHeight + "px";
-        }
-    }, [value]);
-
+const WysiwygInput = ({ value, onChange, placeholder }) => {
     return (
-        <textarea
-            ref={textareaRef}
-            value={value || ""}
-            onChange={(e) => onChange(e.target.value)}
-            placeholder={placeholder}
-            className="w-full bg-transparent border-0 focus:ring-0 p-0 text-gray-700 resize-none min-h-[60px]"
-        />
+        <div className="bg-white rounded-md border border-gray-200 overflow-hidden">
+            <ReactQuill
+                theme="snow"
+                value={value || ''}
+                onChange={onChange}
+                modules={modules}
+                formats={formats}
+                placeholder={placeholder || "Start writing..."}
+            />
+        </div>
     );
-}
+};
+
+export default WysiwygInput;
