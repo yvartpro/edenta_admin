@@ -82,8 +82,7 @@ export const BlockBar = ({ onAdd }) => {
     const blocks = [
         { type: "text", label: "Text" },
         { type: "image", label: "Image" },
-        { type: "video", label: "Video" },
-        { type: "list", label: "List" },
+        // { type: "list", label: "List" },
     ];
 
     return (

@@ -63,12 +63,6 @@ export default function ArticlePreview({ data }) {
                       </figure>
                     );
                   }
-                  case "video":
-                    return (
-                      <div key={block.id} className="my-6 aspect-video bg-black rounded-lg flex items-center justify-center text-white">
-                        VIDEO PLACEHOLDER
-                      </div>
-                    );
                   case "list":
                     return (
                       <div key={block.id} className="bg-gray-100 p-4 rounded text-xs text-gray-500">List Preview Not Implemented</div>

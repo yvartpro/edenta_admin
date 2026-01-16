@@ -373,7 +373,7 @@ export default function ArticleEditor() {
                               <button onClick={() => removeBlock(section.id, block.id)} className="p-1 bg-red-50 text-red-500 rounded hover:bg-red-100"><Trash2 size={12} /></button>
                             </div>
 
-                            {["image", "video"].includes(block.type) ? (
+                            {block.type === "image" ? (
                               <div className="bg-gray-50 p-3 rounded border border-gray-200">
                                 <div className="flex gap-2 items-center">
                                   <input
