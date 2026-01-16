@@ -294,14 +294,30 @@ export default function ArticleEditor() {
     req.then(() => navigate("/articles")).catch(alert).finally(() => setSaving(false));
   };
 
+  const [mobileTab, setMobileTab] = useState('editor'); // 'editor' | 'preview'
+
   if (loading) return <div className="p-10 text-center">Loading Article...</div>;
 
   return (
-    <div className="flex h-[calc(100vh-64px)] -m-8">
-      {/* Subtract header/padding height approx or just full screen absolute-ish */}
+    <div className="flex flex-col lg:flex-row h-[calc(100vh-8rem)] lg:h-[calc(100vh-64px)] -m-4 lg:-m-8">
+      {/* MOBILE TABS */}
+      <div className="lg:hidden flex border-b border-gray-200 bg-white shrink-0">
+        <button
+          onClick={() => setMobileTab('editor')}
+          className={`flex-1 py-3 text-sm font-bold border-b-2 ${mobileTab === 'editor' ? 'border-indigo-600 text-indigo-700' : 'border-transparent text-gray-500'}`}
+        >
+          Editor
+        </button>
+        <button
+          onClick={() => setMobileTab('preview')}
+          className={`flex-1 py-3 text-sm font-bold border-b-2 ${mobileTab === 'preview' ? 'border-indigo-600 text-indigo-700' : 'border-transparent text-gray-500'}`}
+        >
+          Preview
+        </button>
+      </div>
 
       {/* LEFT: EDITOR */}
-      <div className="w-1/2 overflow-y-auto p-8 border-r border-gray-200">
+      <div className={`w-full lg:w-1/2 overflow-y-auto p-4 lg:p-8 border-r border-gray-200 ${mobileTab === 'preview' ? 'hidden lg:block' : ''}`}>
         <Header
           title={id ? "Edit Article" : "Create Article"}
           action={saving ? <>Saving... <ButtonLoadingSpinner /></> : "Save Article"}
@@ -467,8 +483,11 @@ export default function ArticleEditor() {
       </div>
 
       {/* RIGHT: PREVIEW */}
-      <div className="w-1/2 bg-gray-100 overflow-y-auto p-12">
-        <div className="bg-white shadow-xl min-h-screen rounded-xl p-10">
+      <div className={`w-full lg:w-1/2 bg-gray-100 overflow-y-auto p-4 lg:p-12 ${mobileTab === 'editor' ? 'hidden lg:block' : ''}`}>
+        <div className="bg-white shadow-xl min-h-screen rounded-xl p-6 lg:p-10">
+          <div className="lg:hidden mb-4 text-center text-xs text-gray-500 uppercase tracking-widest font-bold">
+            Mobile Verification Preview
+          </div>
           <ArticlePreview data={article} />
         </div>
       </div>

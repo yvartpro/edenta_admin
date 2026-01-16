@@ -83,62 +83,107 @@ export default function ArticleList() {
             </Link>
           </div>
         ) : (
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Article</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+          <>
+            {/* MOBILE CARD VIEW */}
+            <div className="grid grid-cols-1 gap-4 p-4 lg:hidden">
               {articles.map((article) => (
-                <tr key={article.id} className="hover:bg-gray-50 group">
-                  <td className="px-6 py-4">
-                    <div className="flex items-center">
-                      <div className="h-10 w-10 flex-shrink-0 bg-gray-100 rounded-md overflow-hidden">
-                        {article.heroImage?.url ? (
-                          <img src={article.heroImage.url} alt="" className="h-full w-full object-cover" />
-                        ) : (
-                          <div className="h-full w-full flex items-center justify-center text-gray-300">
-                            <FileText size={20} />
-                          </div>
-                        )}
+                <div key={article.id} className="bg-white border rounded-lg p-4 shadow-sm flex gap-4 items-start">
+                  <div className="h-20 w-20 flex-shrink-0 bg-gray-100 rounded-md overflow-hidden">
+                    {article.heroImage?.url ? (
+                      <img src={article.heroImage.url} alt="" className="h-full w-full object-cover" />
+                    ) : (
+                      <div className="h-full w-full flex items-center justify-center text-gray-300">
+                        <FileText size={20} />
                       </div>
-                      <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">{article.title}</div>
-                        <div className="text-sm text-gray-500 text-xs truncate max-w-xs">{article.subtitle || "No subtitle"}</div>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h4 className="font-semibold text-gray-900 truncate pr-2">{article.title}</h4>
+                        <p className="text-xs text-gray-500 mb-2">{new Date(article.createdAt).toLocaleDateString()}</p>
+                      </div>
+                      <StatusBadge status={article.status} />
+                    </div>
+
+                    <div className="flex justify-between items-end mt-2">
+                      <span className="text-xs px-2 py-1 bg-gray-100 rounded text-gray-600">
+                        {article.category?.name || "Uncategorized"}
+                      </span>
+                      <div className="flex gap-3">
+                        <Link to={`/articles/${article.id}`} className="text-indigo-600 p-1">
+                          <Edit2 size={18} />
+                        </Link>
+                        <button onClick={() => handleDelete(article.id)} className="text-red-400 p-1">
+                          <Trash2 size={18} />
+                        </button>
                       </div>
                     </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {article.category?.name || <span className="text-gray-300 italic">Uncategorized</span>}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <StatusBadge status={article.status} />
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {new Date(article.createdAt).toLocaleDateString()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Link to={`/articles/${article.id}`} className="text-indigo-600 hover:text-indigo-900">
-                        <Edit2 size={18} />
-                      </Link>
-                      <button
-                        onClick={() => handleDelete(article.id)}
-                        className="text-red-400 hover:text-red-600"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+
+            {/* DESKTOP TABLE VIEW */}
+            <div className="hidden lg:block">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Article</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {articles.map((article) => (
+                    <tr key={article.id} className="hover:bg-gray-50 group">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center">
+                          <div className="h-10 w-10 flex-shrink-0 bg-gray-100 rounded-md overflow-hidden">
+                            {article.heroImage?.url ? (
+                              <img src={article.heroImage.url} alt="" className="h-full w-full object-cover" />
+                            ) : (
+                              <div className="h-full w-full flex items-center justify-center text-gray-300">
+                                <FileText size={20} />
+                              </div>
+                            )}
+                          </div>
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-gray-900">{article.title}</div>
+                            <div className="text-sm text-gray-500 text-xs truncate max-w-xs">{article.subtitle || "No subtitle"}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {article.category?.name || <span className="text-gray-300 italic">Uncategorized</span>}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <StatusBadge status={article.status} />
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {new Date(article.createdAt).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Link to={`/articles/${article.id}`} className="text-indigo-600 hover:text-indigo-900">
+                            <Edit2 size={18} />
+                          </Link>
+                          <button
+                            onClick={() => handleDelete(article.id)}
+                            className="text-red-400 hover:text-red-600"
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
     </div>
