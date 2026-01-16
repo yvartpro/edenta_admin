@@ -234,8 +234,9 @@ export default function ArticleEditor() {
     if (mediaCtx.type === "gallery") {
       const images = entries.map(f => ({ fileId: f.id, url: f.url }));
       updateBlock(mediaCtx.sectionId, mediaCtx.blockId, { images });
-      setShowMediaLibrary(false);
-      setMediaCtx(null);
+      // Keep library open for multi-select
+      // setShowMediaLibrary(false); 
+      // setMediaCtx(null);
       return;
     }
 
@@ -489,6 +490,11 @@ export default function ArticleEditor() {
               <MediaGrid
                 onSelect={handleMediaSelect}
                 multiSelect={mediaCtx?.type === "gallery"}
+                initialSelectedIds={
+                  mediaCtx?.type === "gallery"
+                    ? (article.content?.sections?.find(s => s.id === mediaCtx?.sectionId)?.blocks?.find(b => b.id === mediaCtx?.blockId)?.images || []).map(i => i.fileId)
+                    : []
+                }
               />
             </div>
           </div>
