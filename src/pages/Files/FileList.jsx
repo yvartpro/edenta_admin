@@ -73,6 +73,7 @@ export default function FileList() {
             loading={uploading}
             icon={Upload}
             className={`cursor-pointer ${uploading ? 'opacity-70 cursor-not-allowed' : ''}`}
+            mobileIconOnly
           >
             Upload New File
           </EdentaButton>

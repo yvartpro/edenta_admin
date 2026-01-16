@@ -5,8 +5,12 @@ import { twMerge } from 'tailwind-merge';
 // eslint-disable-next-line react-refresh/only-export-components
 export const classNames = (...inputs) => twMerge(clsx(inputs));
 
-export const EdentaButton = ({ children, icon: Icon, onClick, loading, disabled, className, variant = "primary", type = "button" }) => {
-  const baseStyles = "px-4 py-2 rounded-md font-medium transition-colors flex items-center gap-2 justify-center disabled:opacity-50 disabled:cursor-not-allowed";
+export const EdentaButton = ({ children, icon: Icon, onClick, loading, disabled, className, variant = "primary", type = "button", mobileIconOnly = false }) => {
+  const isIconOnly = !children;
+  // If no children, use p-2. If mobileIconOnly, use p-2 on mobile and px-4 on desktop. Else px-4.
+  const padding = isIconOnly ? "p-2" : mobileIconOnly ? "p-2 lg:px-4 lg:py-2" : "px-4 py-2";
+
+  const baseStyles = `rounded-md font-medium transition-colors flex items-center gap-2 justify-center disabled:opacity-50 disabled:cursor-not-allowed ${padding}`;
   const variants = {
     primary: "bg-pink-600 text-white hover:bg-pink-700 border border-transparent shadow-sm",
     secondary: "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 shadow-sm",
@@ -23,7 +27,11 @@ export const EdentaButton = ({ children, icon: Icon, onClick, loading, disabled,
       className={classNames(baseStyles, variants[variant] || variants.primary, className)}
     >
       {loading ? <ButtonLoadingSpinner /> : Icon && <Icon size={18} />}
-      {children}
+      {children && (
+        <span className={mobileIconOnly ? "hidden lg:inline" : ""}>
+          {children}
+        </span>
+      )}
     </button>
   );
 };

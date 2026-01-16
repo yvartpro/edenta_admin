@@ -59,7 +59,7 @@ export default function ArticleList() {
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold text-gray-900">Articles</h1>
         <Link to="/articles/new">
-          <EdentaButton icon={Plus}>Create Article</EdentaButton>
+          <EdentaButton icon={Plus} mobileIconOnly>Create Article</EdentaButton>
         </Link>
       </div>
 

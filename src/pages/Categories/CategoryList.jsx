@@ -134,12 +134,14 @@ export default function CategoryList() {
                     disabled={!editName.trim()}
                     loading={savingEdit}
                     icon={Save}
+                    mobileIconOnly
                   >
                     Save
                   </EdentaButton>
                   <EdentaButton
                     onClick={cancelEdit}
                     icon={X}
+                    mobileIconOnly
                   >
                     Cancel
                   </EdentaButton>
@@ -154,6 +156,8 @@ export default function CategoryList() {
                     <EdentaButton
                       onClick={() => startEdit(cat)}
                       icon={Edit2}
+                      mobileIconOnly
+                      variant="ghost"
                     >
                       Edit
                     </EdentaButton>
@@ -162,6 +166,9 @@ export default function CategoryList() {
                       icon={Trash2}
                       disabled={deleting}
                       loading={deleting}
+                      mobileIconOnly
+                      variant="ghost"
+                      className="text-red-600 hover:bg-red-50 hover:text-red-700"
                     >
                       Delete
                     </EdentaButton>
