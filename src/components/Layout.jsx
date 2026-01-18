@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { LayoutDashboard, FileText, FolderOpen, Image as ImageIcon, Menu, X } from "lucide-react";
+import { LayoutDashboard, FileText, FolderOpen, Image as ImageIcon, Menu, X, LogOut } from "lucide-react";
 import { classNames } from "./MyUtilities";
+import { useAuth } from "../hooks/useAuth";
 
 export default function Layout() {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { logout, user } = useAuth();
 
   const navItems = [
     { label: "Dashboard", path: "/", icon: LayoutDashboard },
@@ -13,6 +15,10 @@ export default function Layout() {
     { label: "Categories", path: "/categories", icon: FolderOpen },
     { label: "Files", path: "/files", icon: ImageIcon },
   ];
+
+  const handleLogout = () => {
+    logout();
+  };
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -66,15 +72,22 @@ export default function Layout() {
         </nav>
 
         <div className="p-4 border-t border-gray-100">
-          <div className="flex items-center gap-3 px-4 py-2">
+          <div className="flex items-center gap-3 px-4 py-2 mb-2">
             <div className="w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center text-pink-700 font-bold text-xs">
-              AD
+              {user?.email?.[0]?.toUpperCase() || 'U'}
             </div>
-            <div className="text-xs">
-              <p className="font-medium text-gray-900">Admin User</p>
-              <p className="text-gray-500">admin@edenta.com</p>
+            <div className="text-xs flex-1 min-w-0">
+              <p className="font-medium text-gray-900 truncate">{user?.name || 'User'}</p>
+              <p className="text-gray-500 truncate">{user?.email || 'user@edenta.com'}</p>
             </div>
           </div>
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+          >
+            <LogOut size={16} />
+            Logout
+          </button>
         </div>
       </aside>
 

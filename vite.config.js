@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  base: '/edenta/api/',
+  base: '/edenta/api/dashboard/',
   build: {
     outDir: '../api/public',
     emptyOutDir: true
