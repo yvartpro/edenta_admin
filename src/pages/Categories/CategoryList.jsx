@@ -90,7 +90,7 @@ export default function CategoryList() {
 
   const saveEdit = (id) => {
     setSavingEdit(true);
-    apiClient.put(`/category/${id}`, { name: editName })
+    apiClient.patch(`/category/${id}`, { name: editName })
       .then(() => {
         setEditingId(null);
         clearCache('categories');

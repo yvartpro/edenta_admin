@@ -13,7 +13,7 @@ export const createArticle = async (data) => {
 };
 
 export const updateArticle = async (id, data) => {
-    return apiClient.put(`/article/${id}`, data);
+    return apiClient.patch(`/article/${id}`, data);
 };
 
 export const deleteArticle = async (id) => {
